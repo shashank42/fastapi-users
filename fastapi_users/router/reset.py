@@ -2,7 +2,7 @@ from typing import Callable, Optional
 
 import jwt
 from fastapi import APIRouter, Body, HTTPException, Request, status
-from pydantic import UUID4, EmailStr
+from pydantic import UUID4
 
 from fastapi_users import models
 from fastapi_users.db import BaseUserDatabase
@@ -24,9 +24,9 @@ def get_reset_password_router(
 
     @router.post("/forgot-password", status_code=status.HTTP_202_ACCEPTED)
     async def forgot_password(
-        request: Request, email: EmailStr = Body(..., embed=True)
+        request: Request, phone: str = Body(..., embed=True)
     ):
-        user = await user_db.get_by_email(email)
+        user = await user_db.get_by_phone(phone)
 
         if user is not None and user.is_active:
             token_data = {"user_id": str(user.id), "aud": RESET_PASSWORD_TOKEN_AUDIENCE}

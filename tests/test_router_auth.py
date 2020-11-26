@@ -65,12 +65,12 @@ class TestLogin:
         assert data["detail"] == ErrorCode.LOGIN_BAD_CREDENTIALS
 
     @pytest.mark.parametrize(
-        "email", ["king.arthur@camelot.bt", "King.Arthur@camelot.bt"]
+        "phone", ["king.arthur@camelot.bt", "King.Arthur@camelot.bt"]
     )
     async def test_valid_credentials(
-        self, path, email, test_app_client: httpx.AsyncClient, user: UserDB
+        self, path, phone, test_app_client: httpx.AsyncClient, user: UserDB
     ):
-        data = {"username": email, "password": "guinevere"}
+        data = {"username": phone, "password": "guinevere"}
         response = await test_app_client.post(path, data=data)
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == {"token": str(user.id)}

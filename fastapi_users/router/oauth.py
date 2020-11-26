@@ -94,7 +94,7 @@ def get_oauth_router(
         access_token_state=Depends(oauth2_authorize_callback),
     ):
         token, state = access_token_state
-        account_id, account_email = await oauth_client.get_id_email(
+        account_id, account_phone = await oauth_client.get_id_phone(
             token["access_token"]
         )
 
@@ -111,11 +111,11 @@ def get_oauth_router(
             expires_at=token["expires_at"],
             refresh_token=token.get("refresh_token"),
             account_id=account_id,
-            account_email=account_email,
+            account_phone=account_phone,
         )
 
         if not user:
-            user = await user_db.get_by_email(account_email)
+            user = await user_db.get_by_phone(account_phone)
             if user:
                 # Link account
                 user.oauth_accounts.append(new_oauth_account)  # type: ignore
@@ -124,7 +124,7 @@ def get_oauth_router(
                 # Create account
                 password = generate_password()
                 user = user_db_model(
-                    email=account_email,
+                    phone=account_phone,
                     hashed_password=get_password_hash(password),
                     oauth_accounts=[new_oauth_account],
                 )

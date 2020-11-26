@@ -25,7 +25,7 @@ def get_create_user(
     async def create_user(
         user: models.BaseUserCreate, safe: bool = False
     ) -> models.BaseUserDB:
-        existing_user = await user_db.get_by_email(user.email)
+        existing_user = await user_db.get_by_phone(user.phone)
 
         if existing_user is not None:
             raise UserAlreadyExists()

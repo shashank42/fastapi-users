@@ -56,7 +56,7 @@ def event_loop():
 @pytest.fixture
 def user() -> UserDB:
     return UserDB(
-        email="king.arthur@camelot.bt",
+        phone="king.arthur@camelot.bt",
         hashed_password=guinevere_password_hash,
     )
 
@@ -64,7 +64,7 @@ def user() -> UserDB:
 @pytest.fixture
 def user_oauth(oauth_account1, oauth_account2) -> UserDBOAuth:
     return UserDBOAuth(
-        email="king.arthur@camelot.bt",
+        phone="king.arthur@camelot.bt",
         hashed_password=guinevere_password_hash,
         oauth_accounts=[oauth_account1, oauth_account2],
     )
@@ -73,7 +73,7 @@ def user_oauth(oauth_account1, oauth_account2) -> UserDBOAuth:
 @pytest.fixture
 def inactive_user() -> UserDB:
     return UserDB(
-        email="percival@camelot.bt",
+        phone="percival@camelot.bt",
         hashed_password=angharad_password_hash,
         is_active=False,
     )
@@ -82,7 +82,7 @@ def inactive_user() -> UserDB:
 @pytest.fixture
 def inactive_user_oauth(oauth_account3) -> UserDBOAuth:
     return UserDBOAuth(
-        email="percival@camelot.bt",
+        phone="percival@camelot.bt",
         hashed_password=angharad_password_hash,
         is_active=False,
         oauth_accounts=[oauth_account3],
@@ -92,7 +92,7 @@ def inactive_user_oauth(oauth_account3) -> UserDBOAuth:
 @pytest.fixture
 def superuser() -> UserDB:
     return UserDB(
-        email="merlin@camelot.bt",
+        phone="merlin@camelot.bt",
         hashed_password=viviane_password_hash,
         is_superuser=True,
     )
@@ -101,7 +101,7 @@ def superuser() -> UserDB:
 @pytest.fixture
 def superuser_oauth() -> UserDBOAuth:
     return UserDBOAuth(
-        email="merlin@camelot.bt",
+        phone="merlin@camelot.bt",
         hashed_password=viviane_password_hash,
         is_superuser=True,
         oauth_accounts=[],
@@ -115,7 +115,7 @@ def oauth_account1() -> BaseOAuthAccount:
         access_token="TOKEN",
         expires_at=1579000751,
         account_id="user_oauth1",
-        account_email="king.arthur@camelot.bt",
+        account_phone="king.arthur@camelot.bt",
     )
 
 
@@ -126,7 +126,7 @@ def oauth_account2() -> BaseOAuthAccount:
         access_token="TOKEN",
         expires_at=1579000751,
         account_id="user_oauth2",
-        account_email="king.arthur@camelot.bt",
+        account_phone="king.arthur@camelot.bt",
     )
 
 
@@ -137,7 +137,7 @@ def oauth_account3() -> BaseOAuthAccount:
         access_token="TOKEN",
         expires_at=1579000751,
         account_id="inactive_user_oauth1",
-        account_email="percival@camelot.bt",
+        account_phone="percival@camelot.bt",
     )
 
 
@@ -153,13 +153,13 @@ def mock_user_db(user, inactive_user, superuser) -> BaseUserDatabase:
                 return superuser
             return None
 
-        async def get_by_email(self, email: str) -> Optional[UserDB]:
-            lower_email = email.lower()
-            if lower_email == user.email.lower():
+        async def get_by_phone(self, phone: str) -> Optional[UserDB]:
+            lower_phone = phone.lower()
+            if lower_phone == user.phone.lower():
                 return user
-            if lower_email == inactive_user.email.lower():
+            if lower_phone == inactive_user.phone.lower():
                 return inactive_user
-            if lower_email == superuser.email.lower():
+            if lower_phone == superuser.phone.lower():
                 return superuser
             return None
 
@@ -189,13 +189,13 @@ def mock_user_db_oauth(
                 return superuser_oauth
             return None
 
-        async def get_by_email(self, email: str) -> Optional[UserDBOAuth]:
-            lower_email = email.lower()
-            if lower_email == user_oauth.email.lower():
+        async def get_by_phone(self, phone: str) -> Optional[UserDBOAuth]:
+            lower_phone = phone.lower()
+            if lower_phone == user_oauth.phone.lower():
                 return user_oauth
-            if lower_email == inactive_user_oauth.email.lower():
+            if lower_phone == inactive_user_oauth.phone.lower():
                 return inactive_user_oauth
-            if lower_email == superuser_oauth.email.lower():
+            if lower_phone == superuser_oauth.phone.lower():
                 return superuser_oauth
             return None
 

@@ -22,7 +22,7 @@ async def test_not_implemented_methods(user):
         await base_user_db.get("aaa")
 
     with pytest.raises(NotImplementedError):
-        await base_user_db.get_by_email("lancelot@camelot.bt")
+        await base_user_db.get_by_phone("lancelot@camelot.bt")
 
     with pytest.raises(NotImplementedError):
         await base_user_db.get_by_oauth_account("google", "user_oauth1")
@@ -64,7 +64,7 @@ class TestAuthenticate:
         )
         user = await mock_user_db.authenticate(form)
         assert user is not None
-        assert user.email == "king.arthur@camelot.bt"
+        assert user.phone == "king.arthur@camelot.bt"
 
     @pytest.mark.asyncio
     async def test_upgrade_password_hash(
@@ -81,5 +81,5 @@ class TestAuthenticate:
         )
         user = await mock_user_db.authenticate(form)
         assert user is not None
-        assert user.email == "king.arthur@camelot.bt"
+        assert user.phone == "king.arthur@camelot.bt"
         assert mock_user_db.update.called is True

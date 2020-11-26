@@ -1,7 +1,7 @@
 import uuid
 from typing import List, Optional, TypeVar
 
-from pydantic import UUID4, BaseModel, EmailStr, validator
+from pydantic import UUID4, BaseModel, validator
 
 
 class CreateUpdateDictModel(BaseModel):
@@ -19,7 +19,7 @@ class BaseUser(CreateUpdateDictModel):
     """Base User model."""
 
     id: Optional[UUID4] = None
-    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
 
@@ -29,7 +29,7 @@ class BaseUser(CreateUpdateDictModel):
 
 
 class BaseUserCreate(CreateUpdateDictModel):
-    email: EmailStr
+    phone: str
     password: str
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
@@ -59,7 +59,7 @@ class BaseOAuthAccount(BaseModel):
     expires_at: int
     refresh_token: Optional[str] = None
     account_id: str
-    account_email: str
+    account_phone: str
 
     @validator("id", pre=True, always=True)
     def default_id(cls, v):

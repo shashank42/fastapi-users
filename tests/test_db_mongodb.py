@@ -53,7 +53,7 @@ async def mongodb_user_db_oauth(get_mongodb_user_db):
 @pytest.mark.db
 async def test_queries(mongodb_user_db: MongoDBUserDatabase[UserDB]):
     user = UserDB(
-        email="lancelot@camelot.bt",
+        phone="lancelot@camelot.bt",
         hashed_password=get_password_hash("guinevere"),
     )
 
@@ -62,7 +62,7 @@ async def test_queries(mongodb_user_db: MongoDBUserDatabase[UserDB]):
     assert user_db.id is not None
     assert user_db.is_active is True
     assert user_db.is_superuser is False
-    assert user_db.email == user.email
+    assert user_db.phone == user.phone
 
     # Update
     user_db.is_superuser = True
@@ -74,22 +74,22 @@ async def test_queries(mongodb_user_db: MongoDBUserDatabase[UserDB]):
     assert id_user.id == user_db.id
     assert id_user.is_superuser is True
 
-    # Get by email
-    email_user = await mongodb_user_db.get_by_email(str(user.email))
-    assert email_user is not None
-    assert email_user.id == user_db.id
+    # Get by phone
+    phone_user = await mongodb_user_db.get_by_phone(str(user.phone))
+    assert phone_user is not None
+    assert phone_user.id == user_db.id
 
-    # Get by uppercased email
-    email_user = await mongodb_user_db.get_by_email("Lancelot@camelot.bt")
-    assert email_user is not None
-    assert email_user.id == user_db.id
+    # Get by uppercased phone
+    phone_user = await mongodb_user_db.get_by_phone("Lancelot@camelot.bt")
+    assert phone_user is not None
+    assert phone_user.id == user_db.id
 
-    # Exception when inserting existing email
+    # Exception when inserting existing phone
     with pytest.raises(pymongo.errors.DuplicateKeyError):
         await mongodb_user_db.create(user)
 
     # Unknown user
-    unknown_user = await mongodb_user_db.get_by_email("galahad@camelot.bt")
+    unknown_user = await mongodb_user_db.get_by_phone("galahad@camelot.bt")
     assert unknown_user is None
 
     # Delete user
@@ -101,7 +101,7 @@ async def test_queries(mongodb_user_db: MongoDBUserDatabase[UserDB]):
 @pytest.mark.asyncio
 @pytest.mark.db
 @pytest.mark.parametrize(
-    "email,query,found",
+    "phone,query,found",
     [
         ("lancelot@camelot.bt", "lancelot@camelot.bt", True),
         ("lancelot@camelot.bt", "LanceloT@camelot.bt", True),
@@ -114,22 +114,22 @@ async def test_queries(mongodb_user_db: MongoDBUserDatabase[UserDB]):
         ("квіточка@пошта.укр", "КВІТОЧКА@ПОШТА.УКР", True),
     ],
 )
-async def test_email_query(
-    mongodb_user_db: MongoDBUserDatabase[UserDB], email: str, query: str, found: bool
+async def test_phone_query(
+    mongodb_user_db: MongoDBUserDatabase[UserDB], phone: str, query: str, found: bool
 ):
     user = UserDB(
-        email=email,
+        phone=phone,
         hashed_password=get_password_hash("guinevere"),
     )
     await mongodb_user_db.create(user)
 
-    email_user = await mongodb_user_db.get_by_email(query)
+    phone_user = await mongodb_user_db.get_by_phone(query)
 
     if found:
-        assert email_user is not None
-        assert email_user.id == user.id
+        assert phone_user is not None
+        assert phone_user.id == user.id
     else:
-        assert email_user is None
+        assert phone_user is None
 
 
 @pytest.mark.asyncio
@@ -137,7 +137,7 @@ async def test_email_query(
 async def test_queries_custom_fields(mongodb_user_db: MongoDBUserDatabase[UserDB]):
     """It should output custom fields in query result."""
     user = UserDB(
-        email="lancelot@camelot.bt",
+        phone="lancelot@camelot.bt",
         hashed_password=get_password_hash("guinevere"),
         first_name="Lancelot",
     )
@@ -157,7 +157,7 @@ async def test_queries_oauth(
     oauth_account2,
 ):
     user = UserDBOAuth(
-        email="lancelot@camelot.bt",
+        phone="lancelot@camelot.bt",
         hashed_password=get_password_hash("guinevere"),
         oauth_accounts=[oauth_account1, oauth_account2],
     )
@@ -178,11 +178,11 @@ async def test_queries_oauth(
     assert id_user.id == user_db.id
     assert id_user.oauth_accounts[0].access_token == "NEW_TOKEN"
 
-    # Get by email
-    email_user = await mongodb_user_db_oauth.get_by_email(str(user.email))
-    assert email_user is not None
-    assert email_user.id == user_db.id
-    assert len(email_user.oauth_accounts) == 2
+    # Get by phone
+    phone_user = await mongodb_user_db_oauth.get_by_phone(str(user.phone))
+    assert phone_user is not None
+    assert phone_user.id == user_db.id
+    assert len(phone_user.oauth_accounts) == 2
 
     # Get by OAuth account
     oauth_user = await mongodb_user_db_oauth.get_by_oauth_account(

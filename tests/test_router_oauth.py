@@ -163,15 +163,15 @@ class TestCallback:
                 "expires_at": 1579179542,
             }
             with asynctest.patch.object(
-                oauth_client, "get_id_email"
-            ) as get_id_email_mock:
-                get_id_email_mock.return_value = ("user_oauth1", user_oauth.email)
+                oauth_client, "get_id_phone"
+            ) as get_id_phone_mock:
+                get_id_phone_mock.return_value = ("user_oauth1", user_oauth.phone)
                 response = await test_app_client.get(
                     "/callback",
                     params={"code": "CODE", "state": "STATE"},
                 )
 
-        get_id_email_mock.assert_awaited_once_with("TOKEN")
+        get_id_phone_mock.assert_awaited_once_with("TOKEN")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
         assert after_register.called is False
@@ -193,18 +193,18 @@ class TestCallback:
                 "expires_at": 1579179542,
             }
             with asynctest.patch.object(
-                oauth_client, "get_id_email"
-            ) as get_id_email_mock:
+                oauth_client, "get_id_phone"
+            ) as get_id_phone_mock:
                 with asynctest.patch.object(
                     mock_user_db_oauth, "update"
                 ) as user_update_mock:
-                    get_id_email_mock.return_value = ("user_oauth1", user_oauth.email)
+                    get_id_phone_mock.return_value = ("user_oauth1", user_oauth.phone)
                     response = await test_app_client.get(
                         "/callback",
                         params={"code": "CODE", "state": state_jwt},
                     )
 
-        get_id_email_mock.assert_awaited_once_with("TOKEN")
+        get_id_phone_mock.assert_awaited_once_with("TOKEN")
         user_update_mock.assert_awaited_once()
         data = cast(Dict[str, Any], response.json())
 
@@ -229,21 +229,21 @@ class TestCallback:
                 "expires_at": 1579179542,
             }
             with asynctest.patch.object(
-                oauth_client, "get_id_email"
-            ) as get_id_email_mock:
+                oauth_client, "get_id_phone"
+            ) as get_id_phone_mock:
                 with asynctest.patch.object(
                     mock_user_db_oauth, "update"
                 ) as user_update_mock:
-                    get_id_email_mock.return_value = (
+                    get_id_phone_mock.return_value = (
                         "superuser_oauth1",
-                        superuser_oauth.email,
+                        superuser_oauth.phone,
                     )
                     response = await test_app_client.get(
                         "/callback",
                         params={"code": "CODE", "state": state_jwt},
                     )
 
-        get_id_email_mock.assert_awaited_once_with("TOKEN")
+        get_id_phone_mock.assert_awaited_once_with("TOKEN")
         user_update_mock.assert_awaited_once()
         data = cast(Dict[str, Any], response.json())
 
@@ -267,12 +267,12 @@ class TestCallback:
                 "expires_at": 1579179542,
             }
             with asynctest.patch.object(
-                oauth_client, "get_id_email"
-            ) as get_id_email_mock:
+                oauth_client, "get_id_phone"
+            ) as get_id_phone_mock:
                 with asynctest.patch.object(
                     mock_user_db_oauth, "create"
                 ) as user_create_mock:
-                    get_id_email_mock.return_value = (
+                    get_id_phone_mock.return_value = (
                         "unknown_user_oauth1",
                         "galahad@camelot.bt",
                     )
@@ -281,7 +281,7 @@ class TestCallback:
                         params={"code": "CODE", "state": state_jwt},
                     )
 
-        get_id_email_mock.assert_awaited_once_with("TOKEN")
+        get_id_phone_mock.assert_awaited_once_with("TOKEN")
         user_create_mock.assert_awaited_once()
         data = cast(Dict[str, Any], response.json())
 
@@ -310,11 +310,11 @@ class TestCallback:
                 "expires_at": 1579179542,
             }
             with asynctest.patch.object(
-                oauth_client, "get_id_email"
-            ) as get_id_email_mock:
-                get_id_email_mock.return_value = (
+                oauth_client, "get_id_phone"
+            ) as get_id_phone_mock:
+                get_id_phone_mock.return_value = (
                     "inactive_user_oauth1",
-                    inactive_user_oauth.email,
+                    inactive_user_oauth.phone,
                 )
                 response = await test_app_client.get(
                     "/callback",
@@ -343,9 +343,9 @@ class TestCallback:
                 "expires_at": 1579179542,
             }
             with asynctest.patch.object(
-                oauth_client, "get_id_email"
-            ) as get_id_email_mock:
-                get_id_email_mock.return_value = ("user_oauth1", user_oauth.email)
+                oauth_client, "get_id_phone"
+            ) as get_id_phone_mock:
+                get_id_phone_mock.return_value = ("user_oauth1", user_oauth.phone)
                 response = await test_app_client_redirect_url.get(
                     "/callback",
                     params={"code": "CODE", "state": state_jwt},

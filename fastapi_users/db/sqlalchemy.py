@@ -53,7 +53,7 @@ class SQLAlchemyBaseUserTable:
     __tablename__ = "user"
 
     id = Column(GUID, primary_key=True)
-    email = Column(String(length=320), unique=True, index=True, nullable=False)
+    phone = Column(String(length=320), unique=True, index=True, nullable=False)
     hashed_password = Column(String(length=72), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_superuser = Column(Boolean, default=False, nullable=False)
@@ -70,7 +70,7 @@ class SQLAlchemyBaseOAuthAccountTable:
     expires_at = Column(Integer, nullable=False)
     refresh_token = Column(String(length=1024), nullable=True)
     account_id = Column(String(length=320), index=True, nullable=False)
-    account_email = Column(String(length=320), nullable=False)
+    account_phone = Column(String(length=320), nullable=False)
 
     @declared_attr
     def user_id(cls):
@@ -119,9 +119,9 @@ class SQLAlchemyUserDatabase(BaseUserDatabase[UD]):
         user = await self.database.fetch_one(query)
         return await self._make_user(user) if user else None
 
-    async def get_by_email(self, email: str) -> Optional[UD]:
+    async def get_by_phone(self, phone: str) -> Optional[UD]:
         query = self.users.select().where(
-            func.lower(self.users.c.email) == func.lower(email)
+            func.lower(self.users.c.phone) == func.lower(phone)
         )
         user = await self.database.fetch_one(query)
         return await self._make_user(user) if user else None

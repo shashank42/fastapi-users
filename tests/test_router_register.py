@@ -55,7 +55,7 @@ class TestRegister:
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
         assert after_register.called is False
 
-    async def test_missing_email(
+    async def test_missing_phone(
         self, test_app_client: httpx.AsyncClient, after_register
     ):
         json = {"password": "guinevere"}
@@ -66,37 +66,37 @@ class TestRegister:
     async def test_missing_password(
         self, test_app_client: httpx.AsyncClient, after_register
     ):
-        json = {"email": "king.arthur@camelot.bt"}
+        json = {"phone": "king.arthur@camelot.bt"}
         response = await test_app_client.post("/register", json=json)
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
         assert after_register.called is False
 
-    async def test_wrong_email(
+    async def test_wrong_phone(
         self, test_app_client: httpx.AsyncClient, after_register
     ):
-        json = {"email": "king.arthur", "password": "guinevere"}
+        json = {"phone": "king.arthur", "password": "guinevere"}
         response = await test_app_client.post("/register", json=json)
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
         assert after_register.called is False
 
     @pytest.mark.parametrize(
-        "email", ["king.arthur@camelot.bt", "King.Arthur@camelot.bt"]
+        "phone", ["king.arthur@camelot.bt", "King.Arthur@camelot.bt"]
     )
     async def test_existing_user(
-        self, email, test_app_client: httpx.AsyncClient, after_register
+        self, phone, test_app_client: httpx.AsyncClient, after_register
     ):
-        json = {"email": email, "password": "guinevere"}
+        json = {"phone": phone, "password": "guinevere"}
         response = await test_app_client.post("/register", json=json)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         data = cast(Dict[str, Any], response.json())
         assert data["detail"] == ErrorCode.REGISTER_USER_ALREADY_EXISTS
         assert after_register.called is False
 
-    @pytest.mark.parametrize("email", ["lancelot@camelot.bt", "Lancelot@camelot.bt"])
+    @pytest.mark.parametrize("phone", ["lancelot@camelot.bt", "Lancelot@camelot.bt"])
     async def test_valid_body(
-        self, email, test_app_client: httpx.AsyncClient, after_register
+        self, phone, test_app_client: httpx.AsyncClient, after_register
     ):
-        json = {"email": email, "password": "guinevere"}
+        json = {"phone": phone, "password": "guinevere"}
         response = await test_app_client.post("/register", json=json)
         assert response.status_code == status.HTTP_201_CREATED
         assert after_register.called is True
@@ -108,7 +108,7 @@ class TestRegister:
 
         actual_user = after_register.call_args[0][0]
         assert str(actual_user.id) == data["id"]
-        assert str(actual_user.email) == email
+        assert str(actual_user.phone) == phone
         request = after_register.call_args[0][1]
         assert isinstance(request, Request)
 
@@ -116,7 +116,7 @@ class TestRegister:
         self, test_app_client: httpx.AsyncClient, after_register
     ):
         json = {
-            "email": "lancelot@camelot.bt",
+            "phone": "lancelot@camelot.bt",
             "password": "guinevere",
             "is_superuser": True,
         }
@@ -131,7 +131,7 @@ class TestRegister:
         self, test_app_client: httpx.AsyncClient, after_register
     ):
         json = {
-            "email": "lancelot@camelot.bt",
+            "phone": "lancelot@camelot.bt",
             "password": "guinevere",
             "is_active": False,
         }

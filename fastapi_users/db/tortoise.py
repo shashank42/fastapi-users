@@ -10,7 +10,7 @@ from fastapi_users.models import UD
 
 class TortoiseBaseUserModel(models.Model):
     id = fields.UUIDField(pk=True, generated=False)
-    email = fields.CharField(index=True, unique=True, null=False, max_length=255)
+    phone = fields.CharField(index=True, unique=True, null=False, max_length=255)
     hashed_password = fields.CharField(null=False, max_length=255)
     is_active = fields.BooleanField(default=True, null=False)
     is_superuser = fields.BooleanField(default=False, null=False)
@@ -34,7 +34,7 @@ class TortoiseBaseOAuthAccountModel(models.Model):
     expires_at = fields.IntField(null=False)
     refresh_token = fields.CharField(null=True, max_length=255)
     account_id = fields.CharField(index=True, null=False, max_length=255)
-    account_email = fields.CharField(null=False, max_length=255)
+    account_phone = fields.CharField(null=False, max_length=255)
 
     class Meta:
         abstract = True
@@ -76,8 +76,8 @@ class TortoiseUserDatabase(BaseUserDatabase[UD]):
         except DoesNotExist:
             return None
 
-    async def get_by_email(self, email: str) -> Optional[UD]:
-        query = self.model.filter(email__iexact=email).first()
+    async def get_by_phone(self, phone: str) -> Optional[UD]:
+        query = self.model.filter(phone__iexact=phone).first()
 
         if self.oauth_account_model is not None:
             query = query.prefetch_related("oauth_accounts")

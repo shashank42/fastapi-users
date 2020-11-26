@@ -15,23 +15,23 @@ def create_user(
 @pytest.mark.asyncio
 class TestCreateUser:
     @pytest.mark.parametrize(
-        "email", ["king.arthur@camelot.bt", "King.Arthur@camelot.bt"]
+        "phone", ["king.arthur@camelot.bt", "King.Arthur@camelot.bt"]
     )
-    async def test_existing_user(self, email, create_user):
-        user = UserCreate(email=email, password="guinevere")
+    async def test_existing_user(self, phone, create_user):
+        user = UserCreate(phone=phone, password="guinevere")
         with pytest.raises(UserAlreadyExists):
             await create_user(user)
 
-    @pytest.mark.parametrize("email", ["lancelot@camelot.bt", "Lancelot@camelot.bt"])
-    async def test_regular_user(self, email, create_user):
-        user = UserCreate(email=email, password="guinevere")
+    @pytest.mark.parametrize("phone", ["lancelot@camelot.bt", "Lancelot@camelot.bt"])
+    async def test_regular_user(self, phone, create_user):
+        user = UserCreate(phone=phone, password="guinevere")
         created_user = await create_user(user)
         assert type(created_user) == UserDB
 
     @pytest.mark.parametrize("safe,result", [(True, False), (False, True)])
     async def test_superuser(self, create_user, safe, result):
         user = UserCreate(
-            email="lancelot@camelot.b", password="guinevere", is_superuser=True
+            phone="lancelot@camelot.b", password="guinevere", is_superuser=True
         )
         created_user = await create_user(user, safe)
         assert type(created_user) == UserDB
@@ -40,7 +40,7 @@ class TestCreateUser:
     @pytest.mark.parametrize("safe,result", [(True, True), (False, False)])
     async def test_is_active(self, create_user, safe, result):
         user = UserCreate(
-            email="lancelot@camelot.b", password="guinevere", is_active=False
+            phone="lancelot@camelot.b", password="guinevere", is_active=False
         )
         created_user = await create_user(user, safe)
         assert type(created_user) == UserDB

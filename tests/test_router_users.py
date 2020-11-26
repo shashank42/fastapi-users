@@ -76,7 +76,7 @@ class TestMe:
 
         data = cast(Dict[str, Any], response.json())
         assert data["id"] == str(user.id)
-        assert data["email"] == user.email
+        assert data["phone"] == user.phone
 
 
 @pytest.mark.router
@@ -107,7 +107,7 @@ class TestUpdateMe:
         assert response.status_code == status.HTTP_200_OK
 
         data = cast(Dict[str, Any], response.json())
-        assert data["email"] == user.email
+        assert data["phone"] == user.phone
 
         assert after_update.called is True
         actual_user = after_update.call_args[0][0]
@@ -120,20 +120,20 @@ class TestUpdateMe:
     async def test_valid_body(
         self, test_app_client: httpx.AsyncClient, user: UserDB, after_update
     ):
-        json = {"email": "king.arthur@tintagel.bt"}
+        json = {"phone": "king.arthur@tintagel.bt"}
         response = await test_app_client.patch(
             "/me", json=json, headers={"Authorization": f"Bearer {user.id}"}
         )
         assert response.status_code == status.HTTP_200_OK
 
         data = cast(Dict[str, Any], response.json())
-        assert data["email"] == "king.arthur@tintagel.bt"
+        assert data["phone"] == "king.arthur@tintagel.bt"
 
         assert after_update.called is True
         actual_user = after_update.call_args[0][0]
         assert actual_user.id == user.id
         updated_fields = after_update.call_args[0][1]
-        assert updated_fields == {"email": "king.arthur@tintagel.bt"}
+        assert updated_fields == {"phone": "king.arthur@tintagel.bt"}
         request = after_update.call_args[0][2]
         assert isinstance(request, Request)
 
@@ -276,12 +276,12 @@ class TestUpdateUser:
         assert response.status_code == status.HTTP_200_OK
 
         data = cast(Dict[str, Any], response.json())
-        assert data["email"] == user.email
+        assert data["phone"] == user.phone
 
     async def test_valid_body(
         self, test_app_client: httpx.AsyncClient, user: UserDB, superuser: UserDB
     ):
-        json = {"email": "king.arthur@tintagel.bt"}
+        json = {"phone": "king.arthur@tintagel.bt"}
         response = await test_app_client.patch(
             f"/{user.id}",
             json=json,
@@ -290,7 +290,7 @@ class TestUpdateUser:
         assert response.status_code == status.HTTP_200_OK
 
         data = cast(Dict[str, Any], response.json())
-        assert data["email"] == "king.arthur@tintagel.bt"
+        assert data["phone"] == "king.arthur@tintagel.bt"
 
     async def test_valid_body_is_superuser(
         self, test_app_client: httpx.AsyncClient, user: UserDB, superuser: UserDB

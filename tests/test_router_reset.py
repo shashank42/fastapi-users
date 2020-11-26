@@ -68,7 +68,7 @@ class TestForgotPassword:
     async def test_not_existing_user(
         self, test_app_client: httpx.AsyncClient, after_forgot_password
     ):
-        json = {"email": "lancelot@camelot.bt"}
+        json = {"phone": "lancelot@camelot.bt"}
         response = await test_app_client.post("/forgot-password", json=json)
         assert response.status_code == status.HTTP_202_ACCEPTED
         assert after_forgot_password.called is False
@@ -76,18 +76,18 @@ class TestForgotPassword:
     async def test_inactive_user(
         self, test_app_client: httpx.AsyncClient, after_forgot_password
     ):
-        json = {"email": "percival@camelot.bt"}
+        json = {"phone": "percival@camelot.bt"}
         response = await test_app_client.post("/forgot-password", json=json)
         assert response.status_code == status.HTTP_202_ACCEPTED
         assert after_forgot_password.called is False
 
     @pytest.mark.parametrize(
-        "email", ["king.arthur@camelot.bt", "King.Arthur@camelot.bt"]
+        "phone", ["king.arthur@camelot.bt", "King.Arthur@camelot.bt"]
     )
     async def test_existing_user(
-        self, email, test_app_client: httpx.AsyncClient, after_forgot_password, user
+        self, phone, test_app_client: httpx.AsyncClient, after_forgot_password, user
     ):
-        json = {"email": email}
+        json = {"phone": phone}
         response = await test_app_client.post("/forgot-password", json=json)
         assert response.status_code == status.HTTP_202_ACCEPTED
         assert after_forgot_password.called is True

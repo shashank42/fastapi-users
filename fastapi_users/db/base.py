@@ -23,8 +23,8 @@ class BaseUserDatabase(Generic[UD]):
         """Get a single user by id."""
         raise NotImplementedError()
 
-    async def get_by_email(self, email: str) -> Optional[UD]:
-        """Get a single user by email."""
+    async def get_by_phone(self, phone: str) -> Optional[UD]:
+        """Get a single user by phone."""
         raise NotImplementedError()
 
     async def get_by_oauth_account(self, oauth: str, account_id: str) -> Optional[UD]:
@@ -47,11 +47,11 @@ class BaseUserDatabase(Generic[UD]):
         self, credentials: OAuth2PasswordRequestForm
     ) -> Optional[UD]:
         """
-        Authenticate and return a user following an email and a password.
+        Authenticate and return a user following an phone and a password.
 
         Will automatically upgrade password hash if necessary.
         """
-        user = await self.get_by_email(credentials.username)
+        user = await self.get_by_phone(credentials.username)
 
         if user is None:
             # Run the hasher to mitigate timing attack

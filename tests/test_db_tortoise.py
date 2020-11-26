@@ -55,7 +55,7 @@ async def tortoise_user_db_oauth() -> AsyncGenerator[TortoiseUserDatabase, None]
 @pytest.mark.db
 async def test_queries(tortoise_user_db: TortoiseUserDatabase[UserDB]):
     user = UserDB(
-        email="lancelot@camelot.bt",
+        phone="lancelot@camelot.bt",
         hashed_password=get_password_hash("guinevere"),
     )
 
@@ -64,7 +64,7 @@ async def test_queries(tortoise_user_db: TortoiseUserDatabase[UserDB]):
     assert user_db.id is not None
     assert user_db.is_active is True
     assert user_db.is_superuser is False
-    assert user_db.email == user.email
+    assert user_db.phone == user.phone
 
     # Update
     user_db.is_superuser = True
@@ -76,17 +76,17 @@ async def test_queries(tortoise_user_db: TortoiseUserDatabase[UserDB]):
     assert id_user.id == user_db.id
     assert id_user.is_superuser is True
 
-    # Get by email
-    email_user = await tortoise_user_db.get_by_email(str(user.email))
-    assert email_user is not None
-    assert email_user.id == user_db.id
+    # Get by phone
+    phone_user = await tortoise_user_db.get_by_phone(str(user.phone))
+    assert phone_user is not None
+    assert phone_user.id == user_db.id
 
-    # Get by uppercased email
-    email_user = await tortoise_user_db.get_by_email("Lancelot@camelot.bt")
-    assert email_user is not None
-    assert email_user.id == user_db.id
+    # Get by uppercased phone
+    phone_user = await tortoise_user_db.get_by_phone("Lancelot@camelot.bt")
+    assert phone_user is not None
+    assert phone_user.id == user_db.id
 
-    # Exception when inserting existing email
+    # Exception when inserting existing phone
     with pytest.raises(IntegrityError):
         await tortoise_user_db.create(user)
 
@@ -96,7 +96,7 @@ async def test_queries(tortoise_user_db: TortoiseUserDatabase[UserDB]):
         await tortoise_user_db.create(wrong_user)
 
     # Unknown user
-    unknown_user = await tortoise_user_db.get_by_email("galahad@camelot.bt")
+    unknown_user = await tortoise_user_db.get_by_phone("galahad@camelot.bt")
     assert unknown_user is None
 
     # Delete user
@@ -110,7 +110,7 @@ async def test_queries(tortoise_user_db: TortoiseUserDatabase[UserDB]):
 async def test_queries_custom_fields(tortoise_user_db: TortoiseUserDatabase[UserDB]):
     """It should output custom fields in query result."""
     user = UserDB(
-        email="lancelot@camelot.bt",
+        phone="lancelot@camelot.bt",
         hashed_password=get_password_hash("guinevere"),
         first_name="Lancelot",
     )
@@ -130,7 +130,7 @@ async def test_queries_oauth(
     oauth_account2,
 ):
     user = UserDBOAuth(
-        email="lancelot@camelot.bt",
+        phone="lancelot@camelot.bt",
         hashed_password=get_password_hash("guinevere"),
         oauth_accounts=[oauth_account1, oauth_account2],
     )
@@ -151,11 +151,11 @@ async def test_queries_oauth(
     assert id_user.id == user_db.id
     assert id_user.oauth_accounts[0].access_token == "NEW_TOKEN"
 
-    # Get by email
-    email_user = await tortoise_user_db_oauth.get_by_email(str(user.email))
-    assert email_user is not None
-    assert email_user.id == user_db.id
-    assert len(email_user.oauth_accounts) == 2
+    # Get by phone
+    phone_user = await tortoise_user_db_oauth.get_by_phone(str(user.phone))
+    assert phone_user is not None
+    assert phone_user.id == user_db.id
+    assert len(phone_user.oauth_accounts) == 2
 
     # Get by OAuth account
     oauth_user = await tortoise_user_db_oauth.get_by_oauth_account(
